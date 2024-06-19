@@ -67,25 +67,36 @@ prog = ctx.program(
 )
 
 
-x = np.linspace(-1.0, 1.0, 50)
-y = np.random.rand(50) - 0.5
-r = np.zeros(50)
-g = np.ones(50)
+x = np.linspace(-1.0, 1.0, 50) # Gera 50 valores espaçados por 1 pixel variando de 1 a -1
+y = np.random.rand(50) - 0.5   # Gera 50 valores aleatórios 
+r = np.zeros(50)               # Gera 50 zeros
+g = np.ones(50)                # Gera 50 uns (1)
 b = np.zeros(50)
 
-vertices = np.dstack([x, y, r, g, b])
-vbo = ctx.buffer(vertices.astype("f4").tobytes())
+vertices = np.dstack([x, y, r, g, b]) # Ref: https://numpy.org/doc/stable/reference/generated/numpy.dstack.html
+vbo = ctx.buffer \
+(
+    # np.ndarray.astype("f4") -> retorna array de float de 4 bytes
+    # retorna um espaço de memória
+    vertices.astype("f4").tobytes()
+)
 vao = ctx.vertex_array(prog, vbo, "in_vert", "in_color")
 
-fbo = ctx.framebuffer(
-
+# Ref: https://moderngl.readthedocs.io/en/latest/reference/context.html#Context.framebuffer
+fbo = ctx.framebuffer \
+(
+    # Ref: https://moderngl.readthedocs.io/en/latest/reference/context.html#Context.texture
     color_attachments=[ctx.texture((512, 512), 3)]
-
 )
 
 while not window.is_closing:
-    fbo.use()
-    fbo.clear(0.0, 0.0, 0.0, 1.0)
-    vao.render(moderngl.LINE_STRIP)
-    ctx.copy_framebuffer(window.fbo, fbo)
-    window.swap_buffers()
+    
+    try:
+        fbo.use()
+        fbo.clear(0.0, 0.0, 0.0, 1.0)
+        vao.render(moderngl.LINE_STRIP)
+        ctx.copy_framebuffer(window.fbo, fbo)
+        window.swap_buffers()
+    
+    except KeyboardInterrupt as k:
+        window.is_closing = True
