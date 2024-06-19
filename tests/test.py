@@ -6,65 +6,61 @@ import numpy as np
 import moderngl_window as glw
 import numpy as np
 
+# Versão mais recente do OpenGL
+GLSL_VERSION = 460 
+GL_VERSION   = (4,6)
 
-GLSL_VERSION = 460
-window_cls = glw.get_local_window_cls('pyglet')
+# Retorna a classe Window
+# Usa 'pyglet' como classe de contexto padrão
+WindowClass = glw.get_local_window_cls() 
 
-window = window_cls(
 
-    size=(512, 512), fullscreen=False, title='ModernGL Window',
-
-    resizable=False, vsync=True, gl_version=(3, 3)
-
+window = WindowClass\
+(
+    size=(512, 512), fullscreen=False, title='ACH2117',
+    resizable=False, vsync=True, gl_version=GL_VERSION
 )
 
+# Instancia objeto de contexto
 ctx = window.ctx
 glw.activate_context(window, ctx=ctx)
+
 window.clear()
 window.swap_buffers()
 
 
+# Inicializa Shaders
 prog = ctx.program(
 
-    vertex_shader="""
+    vertex_shader=\
+    f"""
 
-        #version 330
-
+        #version {GLSL_VERSION}
 
         in vec2 in_vert;
-
         in vec3 in_color;
-
-
         out vec3 v_color;
 
-
-        void main() {
-
+        void main()
+        {{
             v_color = in_color;
-
             gl_Position = vec4(in_vert, 0.0, 1.0);
-
-        }
+        }}
 
     """,
 
-    fragment_shader="""
+    fragment_shader=\
+    f"""
 
-        #version 330
-
+        #version {GLSL_VERSION}
 
         in vec3 v_color;
-
-
         out vec3 f_color;
-
-
-        void main() {
-
+        
+        void main() 
+        {{
             f_color = v_color;
-
-        }
+        }}
 
     """,
 
