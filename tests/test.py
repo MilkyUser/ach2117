@@ -6,6 +6,10 @@ import numpy as np
 import moderngl_window as glw
 import numpy as np
 
+def check_if_released(buff) -> bool:
+    return type(buffer.mglo) == moderngl._moderngl.InvalidObject
+
+
 # Versão mais recente do OpenGL
 GLSL_VERSION = 460 
 GL_VERSION   = (4,6)
@@ -24,6 +28,9 @@ window = WindowClass\
 # Instancia objeto de contexto
 ctx = window.ctx
 glw.activate_context(window, ctx=ctx)
+
+# Configura o modo de Garbage Collection do contexto
+ctx.gc_mode = "context_gc"
 
 window.clear()
 window.swap_buffers()
